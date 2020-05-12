@@ -1,0 +1,41 @@
+---
+    parameters:
+        - in: header
+          name: Authorization
+          schema:
+            type: string
+          required: true
+          security: 
+            - bearerAuth []
+        - in: query
+          description: Task Id
+          schema:
+            type: string
+            format: uuid
+            required: true
+
+    responses:
+        200:
+            description: status of data taken in queued 
+            schema:
+                type: object
+                properties:
+                    status:
+                        type: string
+                    message:
+                        type: object
+                        properties:
+                            task_id:
+                                type: string
+                                format: uuid
+                            task_result:
+                                type: boolean
+                            task_status:
+                                type: string
+        401:
+            description: expired token
+            schema:
+                type: object
+                properties:
+                    msg:
+                        type: string

@@ -1,0 +1,19 @@
+
+job:
+    # before_script:
+    #   -  whoami
+    #   -  pwd
+    #   -  docker info
+    #   -  docker run hello-world
+
+    script:  
+      -  cp /var/ptfin/kafka-variables.env $CI_PROJECT_DIR/kafka-variables.env
+      -  cp /var/ssl/ca_cert.pem $CI_PROJECT_DIR/platform_in/ca_cert.pem
+      -  echo 'Bringing up containerised services'
+      -  docker-compose up --build -d
+      -  echo 'Running Tests'
+      -  docker-compose exec -T platform_incoming_api pytest -p no:cacheprovider -p no:warnings 
+
+    after_script:  
+      -  docker-compose down
+

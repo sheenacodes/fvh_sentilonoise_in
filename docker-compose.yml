@@ -1,0 +1,58 @@
+version: '3'
+
+services:
+
+  platform_incoming_api:
+    build: ./platform_in/
+    entrypoint: ['/project/entrypoint.sh']
+    command: python manage.py run -h 0.0.0.0
+    volumes:
+      - ./platform_in/:/project/
+    ports:
+      - 5000:5000
+    env_file:
+      - kafka-variables.env
+    #  - dev.env
+    environment:
+      - FLASK_APP=app/__init__.py
+      - FLASK_ENV=development
+      - APP_SETTINGS=app.config.DevelopmentConfig
+      - DATABASE_URL=postgresql://postgres:postgres@platform-users-db:5432/fvh_db_dev   
+      - DATABASE_TEST_URL=postgresql://postgres:postgres@platform-users-db:5432/fvh_db_test
+      - SQL_HOST=platform-users-db
+      - SQL_PORT=5432
+      - DATABASE=postgres    
+    depends_on:   
+      - platform-users-db
+      - redis
+
+  platform-users-db:
+    build:
+        context: ./platform_in/db
+        dockerfile: Dockerfile
+    #volumes:
+    #    - postgres_data:/var/lib/postgresql/data/
+    expose:
+        - 5432
+    environment:
+        - POSTGRES_USER=postgres
+        - POSTGRES_PASSWORD=postgres
+        
+  worker:
+    build: ./platform_in/
+    command: python manage.py run_worker
+    env_file:
+        - kafka-variables.env
+    environment:
+        - FLASK_ENV=development
+        - APP_SETTINGS=app.config.DevelopmentConfig
+    volumes:
+        - ./platform_in/:/project/
+    depends_on:  
+      - redis
+        
+  redis:
+        image: redis:5.0.7-alpine
+
+volumes:
+  postgres_data:

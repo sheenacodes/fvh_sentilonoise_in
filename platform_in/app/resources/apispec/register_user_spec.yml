@@ -1,0 +1,44 @@
+---
+parameters:
+    - in: body
+      name: request_body
+      description: Details of user to be created
+      schema:
+          type: object
+          required: 
+            - username
+            - email
+            - password
+          properties:
+              username:
+                  type: string
+              email:
+                  type: string
+                  format: email
+                  value: xx@fvh.fi
+              password:
+                  type: string
+responses:
+    201:
+        description: successful user creation
+        schema:
+            type: object
+            properties:
+                status:
+                    type: string
+                message:
+                    type: object
+                    properties:
+                        username:
+                            type: string
+                        email:
+                            type: string
+    400:
+        description: failure of user creation
+        schema:
+            type: object
+            properties:
+                status:
+                    type: string
+                message:
+                    type: string

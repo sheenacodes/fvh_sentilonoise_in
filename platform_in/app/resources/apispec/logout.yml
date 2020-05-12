@@ -1,0 +1,25 @@
+---
+    parameters:
+        - in: header
+          name: Authorization
+          schema:
+            type: string
+          required: true
+          security: 
+            - bearerAuth []
+
+    responses:
+        200:
+            description: successful logout
+            schema:
+                type: object
+                properties:
+                    message:
+                        type: string
+        401:
+            description: expired token
+            schema:
+                type: object
+                properties:
+                    msg:
+                        type: string
