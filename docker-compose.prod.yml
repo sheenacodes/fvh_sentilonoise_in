@@ -12,7 +12,7 @@ services:
     expose:
       - 5000
     env_file:
-      - kafka-variables.env
+      - config.env
     environment:
       - FLASK_APP=app/__init__.py
       - FLASK_ENV=production
@@ -24,7 +24,7 @@ services:
     build: ./platform_in/
     command: python manage.py run_worker
     env_file:
-        - kafka-variables.env
+        - config.env
     environment:
         - FLASK_ENV=production
         - APP_SETTINGS=app.config.ProductionConfig
