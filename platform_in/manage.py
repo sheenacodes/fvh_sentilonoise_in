@@ -2,8 +2,7 @@ import sys
 
 from flask.cli import FlaskGroup
 
-from app import create_app, db    
-from app.models import PlatformUser   
+from app import create_app  
 
 import redis
 from rq import Connection, Worker
@@ -12,12 +11,6 @@ from rq import Connection, Worker
 app = create_app()   
 cli = FlaskGroup(create_app=create_app)   
 
-
-@cli.command('recreate_db')
-def recreate_db():
-    db.drop_all()
-    db.create_all()
-    db.session.commit()
 
 @cli.command("run_worker")
 def run_worker():

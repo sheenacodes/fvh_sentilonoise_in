@@ -14,29 +14,16 @@ ENV APP_SETTINGS project.config.ProductionConfig
 COPY requirements.txt .
 
 RUN \
- apk add --no-cache python3 postgresql-libs && \
- apk add --no-cache --virtual .build-deps gcc python3-dev musl-dev postgresql-dev && \
+ apk add --no-cache python3  && \
+ apk add --no-cache --virtual .build-deps gcc python3-dev musl-dev  && \
  apk add --no-cache librdkafka librdkafka-dev && \
  apk add netcat-openbsd &&\
  python3 -m pip install -r requirements.txt --no-cache-dir && \
  apk --purge del .build-deps
 
-
  # add and run as non-root user
 RUN addgroup -S app && adduser -S app -G app
 RUN chown -R app:app /project
 
-# # lint
-# RUN pip install --upgrade pip
-# RUN pip install flake8
-# COPY . .
-# RUN flake8 --ignore=E501,F401 .
-
-# change to the app user
 USER app
 
-# run entrypoint.prod.sh
-ENTRYPOINT ["/project/entrypoint.sh"]
-
-# run gunicorn
-#CMD gunicorn --bind 0.0.0.0:$PORT manage:app

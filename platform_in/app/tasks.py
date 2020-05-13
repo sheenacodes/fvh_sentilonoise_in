@@ -7,12 +7,17 @@ from confluent_kafka.avro import AvroProducer
 from app import elastic_apm
 import logging
 
+logging.basicConfig(level=logging.INFO)
+
 
 def delivery_report(err, msg):
     if err is not None:
+        #print("not delivered")
         logging.error(f"Message delivery failed: {err}")
     else:
-        logging.debug(f"Message delivered to {msg.topic()} [{msg.partition()}]")
+        #print("delivered")
+        logging.info(f"Message delivered to {msg.topic()} [{msg.partition()}]")
+
 
 def get_kafka_producer():
     return Producer(
@@ -23,30 +28,10 @@ def get_kafka_producer():
             "sasl.username": current_app.config["SASL_UNAME"],
             "sasl.password": current_app.config["SASL_PASSWORD"],
             "ssl.ca.location": current_app.config["CA_CERT"],
+            #'retries': 3,
+            #"debug": "msg,topic"
         }
     )
-
-
-def create_task_produce_to_kafka(data):
-
-    kafka_producer = get_kafka_producer()
-
-    try:
-        kafka_producer.produce(
-            "test.sputhan.finest.testnoise", json.dumps(data), callback=delivery_report
-        )
-        logger.debug("Kafka Produce")
-        kafka_producer.poll(2)
-        if len(kafka_producer) != 0:
-            return False
-    except BufferError:
-        logging.error("local buffer full", len(kafka_producer))
-        return False
-    except Exception as e:
-        logging.error(e)
-        return False
-
-    return True
 
 
 def create_task_produce_avro_to_kafka(data):
@@ -109,10 +94,15 @@ def create_task_push_sentilo_noise_data(data):
         for data_stream in data_streams:
             topic = data_stream["sensor"]
             observations = data_stream["observations"]
+            # producer to be replaced with kafka rest proxy when ssl and schema registry works
             kafka_producer.produce(
-                f"{topic_prefix}.{topic}", json.dumps(observations), callback=delivery_report
+                f"{topic_prefix}.{topic}",
+                json.dumps(observations),
+                callback=delivery_report,
             )
             kafka_producer.poll(2)
+            #kafka_producer.flush(2.0)
+            return True
     except BufferError:
         logging.error("local buffer full", len(kafka_producer))
         elastic_apm.capture_exception()
@@ -121,4 +111,4 @@ def create_task_push_sentilo_noise_data(data):
         elastic_apm.capture_exception()
         logging.error(e)
         return False
-
+        
