@@ -1,16 +1,44 @@
 from flask import Flask
 import os
-import sys
-import redis
-from flask import jsonify
 from elasticapm.contrib.flask import ElasticAPM
 import logging
+from flask import jsonify, request
+import json
+from confluent_kafka import avro
+from confluent_kafka.avro import AvroProducer
+import certifi
 
-logging.basicConfig(level=logging.INFO)
-
+logging.basicConfig(level=logging.DEBUG)
 elastic_apm = ElasticAPM()
 # print(app.config, file=sys.stderr)
 
+success_response_object = {"status":"success"}
+success_code = 202
+failure_response_object = {"status":"failure"}
+failure_code = 400
+
+def delivery_report(err, msg):
+    if err is not None:
+        logging.error(f"Message delivery failed: {err}")
+    else:
+        logging.debug(f"Message delivered to {msg.topic()} [{msg.partition()}]")
+
+def kafka_avro_produce(avroProducer, topic, data):
+
+    try:
+        avroProducer.produce(topic=topic, value=data)
+        logging.debug("avro produce")
+        avroProducer.poll(2)
+        if len(avroProducer) != 0:
+            return False
+    except BufferError:
+        logging.error("local buffer full", len(avroProducer))
+        return False
+    except Exception as e:
+        logging.error(e)
+        return False
+
+    return True
 
 def create_app(script_info=None):
 
@@ -24,17 +52,50 @@ def create_app(script_info=None):
     # set up extensions
     elastic_apm.init_app(app)
 
-    from app.resources.observations import observations_blueprint
+    value_schema = avro.load("avro/sentilonoise.avsc")
 
-    app.register_blueprint(observations_blueprint)
+    avroProducer = AvroProducer(
+        {
+            "bootstrap.servers": app.config["KAFKA_BROKERS"],
+            "security.protocol": app.config["SECURITY_PROTOCOL"],
+            "sasl.mechanism": app.config["SASL_MECHANISM"],
+            "sasl.username": app.config["SASL_UNAME"],
+            "sasl.password": app.config["SASL_PASSWORD"],
+            "ssl.ca.location": certifi.where(),
+            #"debug": "security,cgrp,fetch,topic,broker,protocol",
+            "on_delivery": delivery_report,
+            "schema.registry.url": app.config["SCHEMA_REGISTRY_URL"] 
+        },
+        default_value_schema=value_schema,
+    )
 
     # shell context for flask cli
     @app.shell_context_processor
     def ctx():
         return {"app": app}
-
+    
     @app.route("/")
-    def check_app_running():
-        return jsonify({"health": "ok"})
+    def hello_world():
+        return jsonify(hello="world")
+
+    @app.route('/cesva/v1', methods=['PUT'])
+    def put_sentilonoise_data():
+        try:
+            data = request.get_json()
+            print(data)
+            data_streams = data["sensors"]
+            topic_prefix = "test.sputha.finest.cesva.v1.noise.sentilo"
+
+            for data_stream in data_streams:
+                topic = data_stream["sensor"]
+                observations = data_stream["observations"]
+                kafka_avro_produce(avroProducer,f"{topic_prefix}.{topic}",observations)
+
+            return success_response_object,success_code
+
+        except Exception as e:
+            elastic_apm.capture_exception()
+            return failure_response_object,failure_code
 
     return app
+

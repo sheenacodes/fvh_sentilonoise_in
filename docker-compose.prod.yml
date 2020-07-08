@@ -2,7 +2,7 @@ version: '3'
 
 services:
 
-  platform_incoming_api:
+  fvh_sentilonoise_in:
     build: 
         context: ./platform_in/
         dockerfile: Dockerfile.prod
@@ -17,28 +17,9 @@ services:
       - FLASK_APP=app/__init__.py
       - FLASK_ENV=production
       - APP_SETTINGS=app.config.ProductionConfig
-    depends_on:   
-      - redis
-       
-  worker:
-    build: ./platform_in/
-    command: python manage.py run_worker
-    env_file:
-        - config.env
-    environment:
-        - FLASK_ENV=production
-        - APP_SETTINGS=app.config.ProductionConfig
-    volumes:
-        - ./platform_in/:/project/
-    depends_on:  
-      - redis
-        
-  redis:
-        image: redis:5.0.7-alpine
+
 
   nginx:
     build: ./nginx
     ports:
       - 1337:80
-    depends_on:
-      - platform_incoming_api

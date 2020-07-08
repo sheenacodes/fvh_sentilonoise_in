@@ -2,7 +2,7 @@ version: '3'
 
 services:
 
-  platform_incoming_api:
+  fvh_sentilonoise_in:
     build: ./platform_in/
     command: python manage.py run -h 0.0.0.0
     volumes:
@@ -15,21 +15,5 @@ services:
       - FLASK_APP=app/__init__.py
       - FLASK_ENV=development
       - APP_SETTINGS=app.config.DevelopmentConfig   
-    depends_on:   
-      - redis
-        
-  worker:
-    build: ./platform_in/
-    command: python manage.py run_worker
-    env_file:
-        - config.env
-    environment:
-        - FLASK_ENV=development
-        - APP_SETTINGS=app.config.DevelopmentConfig
-    volumes:
-        - ./platform_in/:/project/
-    depends_on:  
-      - redis
-        
-  redis:
-        image: redis:5.0.7-alpine
+
+
