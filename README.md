@@ -1,8 +1,5 @@
 # platform-input for sentilo noise
 
-experimental work
-designing Endpoints for platform to injest data and send it to apache kafka
-
 To bring up service:
 
 Note: the environment variables file config.env must be at root folder and
