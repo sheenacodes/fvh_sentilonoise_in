@@ -21,7 +21,7 @@ prod config (nginx+gunicorn)
 2,3,4 same as previous but port  for prod is 1337
 
 example PUT data:
-´´´json
+```json
 {
 	"sensors": [{
 			"sensor": TA120-T246174-N",
@@ -53,6 +53,6 @@ example PUT data:
 		}
 	]
 }
-´´´
+```
 
 
