@@ -82,7 +82,7 @@ def create_app(script_info=None):
             data = request.get_json()
             logging.debug(data)
             data_streams = data["sensors"]
-            topic_prefix = "test.finest.cesva.v1.noise.sentilo"
+            topic_prefix = "finest.cesva.noise."
 
             for data_stream in data_streams:
                 topic = data_stream["sensor"]
