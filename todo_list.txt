@@ -1,5 +1,0 @@
--1. set up gitlab for ci/cd dev 
--2. add test with local kafka
--3. test with kafka cluster -  add basic test to pytest half
--3. parametrize docker host, kafka variables
-4. set up swagger
