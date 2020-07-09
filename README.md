@@ -12,9 +12,7 @@ dev config (flask dev server):
 
 1. docker-compose up
 2. send PUT requests to localhost:5000/cesva/v1 with sentilo noise data
-3. should return in response a <task-id>
-4. the kafka produce happens in a different async process the status of which can be queries using
-localhost:5000/taskstatus/<task-id>
+3. should return success or failure response
 
 prod config (nginx+gunicorn)
 
