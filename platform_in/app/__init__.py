@@ -8,9 +8,8 @@ from confluent_kafka import avro
 from confluent_kafka.avro import AvroProducer
 import certifi
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 elastic_apm = ElasticAPM()
-# print(app.config, file=sys.stderr)
 
 success_response_object = {"status":"success"}
 success_code = 202
@@ -53,7 +52,6 @@ def create_app(script_info=None):
     elastic_apm.init_app(app)
 
     value_schema = avro.load("avro/sentilonoise.avsc")
-
     avroProducer = AvroProducer(
         {
             "bootstrap.servers": app.config["KAFKA_BROKERS"],
@@ -84,11 +82,11 @@ def create_app(script_info=None):
             data = request.get_json()
             print(data)
             data_streams = data["sensors"]
-            topic_prefix = "test.sputha.finest.cesva.v1.noise.sentilo"
+            topic_prefix = "test.finest.cesva.v1.noise.sentilo"
 
             for data_stream in data_streams:
                 topic = data_stream["sensor"]
-                observations = data_stream["observations"]
+                observations = data_stream["observations"][0]
                 kafka_avro_produce(avroProducer,f"{topic_prefix}.{topic}",observations)
 
             return success_response_object,success_code

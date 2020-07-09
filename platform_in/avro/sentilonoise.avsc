@@ -2,42 +2,15 @@
   "name": "sentilonoise",
   "type": "record",
   "namespace": "com.fvh.avro",
+  "type": "record",
   "fields": [
     {
-      "name": "sensors",
-      "type": {
-        "type": "array",
-        "items": {
-          "name": "sensors_record",
-          "type": "record",
-          "fields": [
-            {
-              "name": "sensor",
-              "type": "string"
-            },
-            {
-              "name": "observations",
-              "type": {
-                "type": "array",
-                "items": {
-                  "name": "observations_record",
-                  "type": "record",
-                  "fields": [
-                    {
-                      "name": "value",
-                      "type": "string"
-                    },
-                    {
-                      "name": "timestamp",
-                      "type": "string"
-                    }
-                  ]
-                }
-              }
-            }
-          ]
-        }
-      }
+      "name": "value",
+      "type": "string"
+    },
+    {
+      "name": "timestamp",
+      "type": "string"
     }
   ]
 }
