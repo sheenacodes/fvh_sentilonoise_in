@@ -24,7 +24,7 @@ example PUT data:
 ```json
 {
 	"sensors": [{
-			"sensor": TA120-T246174-N",
+			"sensor": "TA120-T246174-N",
 			"observations": [{
 				"value": "38.7",
 				"timestamp": "12/03/2020T12:26:58UTC"
