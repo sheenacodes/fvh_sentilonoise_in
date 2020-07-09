@@ -80,7 +80,7 @@ def create_app(script_info=None):
     def put_sentilonoise_data():
         try:
             data = request.get_json()
-            print(data)
+            logging.debug(data)
             data_streams = data["sensors"]
             topic_prefix = "test.finest.cesva.v1.noise.sentilo"
 
@@ -92,6 +92,7 @@ def create_app(script_info=None):
             return success_response_object,success_code
 
         except Exception as e:
+            avroProducer.flush()
             elastic_apm.capture_exception()
             return failure_response_object,failure_code
 
