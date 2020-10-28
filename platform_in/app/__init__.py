@@ -78,7 +78,6 @@ def create_app(script_info=None):
                 timestamp = data_stream["observations"][0]["timestamp"]
                 dt_obj = datetime.strptime(timestamp, "%d/%m/%YT%H:%M:%SUTC")
                 timestamp_millisec = round(dt_obj.timestamp() * 1000)
-                logging.info(timestamp_millisec)
 
                 topic = "finest-observations-sentilonoise"
                 observation = {
