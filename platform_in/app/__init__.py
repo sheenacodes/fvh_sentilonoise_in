@@ -4,19 +4,17 @@ from elasticapm.contrib.flask import ElasticAPM
 import logging
 from flask import jsonify, request
 import json
-from confluent_kafka import avro
-from confluent_kafka.avro import AvroProducer
-import certifi
 from datetime import datetime
 import requests
 
 logging.basicConfig(level=logging.INFO)
 elastic_apm = ElasticAPM()
 
-success_response_object = {"status":"success"}
+success_response_object = {"status": "success"}
 success_code = 202
-failure_response_object = {"status":"failure"}
+failure_response_object = {"status": "failure"}
 failure_code = 400
+
 
 def get_ds_id(thing, sensor):
     """
@@ -35,6 +33,7 @@ def get_ds_id(thing, sensor):
         return ds[0]["datastream_id"]
     else:
         return -1
+
 
 def create_app(script_info=None):
 
@@ -57,7 +56,7 @@ def create_app(script_info=None):
     def hello_world():
         return jsonify(hello="world")
 
-    @app.route('/cesva/v1', methods=['PUT'])
+    @app.route("/cesva/v1", methods=["PUT"])
     def put_sentilonoise_data():
         try:
             data = request.get_json()
@@ -66,8 +65,8 @@ def create_app(script_info=None):
 
             for data_stream in data_streams:
                 name = data_stream["sensor"]
-                thing= f"Noise-{name[0:len(name)-2]}"
-                sensor= f"{name[-1].lower()}_val"
+                thing = f"Noise-{name[0:len(name)-2]}"
+                sensor = f"{name[-1].lower()}_val"
                 logging.debug(thing)
                 logging.debug(sensor)
 
@@ -96,16 +95,18 @@ def create_app(script_info=None):
                 payload = {"topic": topic, "observation": observation}
 
                 headers = {"Content-type": "application/json"}
-                resp = requests.post("http://st_observations_api:4888/observation", data=json.dumps(payload), headers=headers)
+                resp = requests.post(
+                    "http://st_observations_api:4888/observation",
+                    data=json.dumps(payload),
+                    headers=headers,
+                )
                 #resp = requests.post("http://host.docker.internal:1337/observation", data=json.dumps(payload), headers=headers)
 
-
-            return success_response_object,success_code
+            return success_response_object, success_code
 
         except Exception as e:
             logging.error(e)
             elastic_apm.capture_exception()
-            return failure_response_object,failure_code
+            return failure_response_object, failure_code
 
     return app
-
