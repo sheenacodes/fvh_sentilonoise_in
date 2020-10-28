@@ -68,8 +68,8 @@ def create_app(script_info=None):
                 name = data_stream["sensor"]
                 thing= f"Noise-{name[0:len(name)-2]}"
                 sensor= f"{name[-1].lower()}_val"
-                logging.info(thing)
-                logging.info(sensor)
+                logging.debug(thing)
+                logging.debug(sensor)
 
                 ds_id = get_ds_id(thing, sensor)
                 if ds_id == -1:
@@ -99,7 +99,7 @@ def create_app(script_info=None):
                 headers = {"Content-type": "application/json"}
                 resp = requests.post("http://st_observations_api:4888/observation", data=json.dumps(payload), headers=headers)
                 #resp = requests.post("http://host.docker.internal:1337/observation", data=json.dumps(payload), headers=headers)
-                #kafka_avro_produce(avroProducer,f"{topic_prefix}.{topic}",observations)
+
 
             return success_response_object,success_code
 
