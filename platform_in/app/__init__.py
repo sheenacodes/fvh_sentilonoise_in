@@ -75,6 +75,7 @@ def create_app(script_info=None):
                     logging.warning(f"no datastream id found for {thing} + {sensor}")
 
                 timestamp = data_stream["observations"][0]["timestamp"]
+                logging.info(timestamp)
                 dt_obj = datetime.strptime(timestamp, "%d/%m/%YT%H:%M:%SUTC")
                 timestamp_millisec = round(dt_obj.timestamp() * 1000)
 
