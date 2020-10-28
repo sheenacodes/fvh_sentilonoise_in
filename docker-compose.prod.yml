@@ -3,7 +3,7 @@ version: '3'
 services:
 
   fvh_sentilonoise_in:
-    build: 
+    build:
         context: ./platform_in/
         dockerfile: Dockerfile.prod
     command: gunicorn --bind 0.0.0.0:5000 manage:app
@@ -22,4 +22,6 @@ services:
   nginx:
     build: ./nginx
     ports:
-      - 1337:80
+      - 1339:80
+    depends_on:
+      - fvh_sentilonoise_in
