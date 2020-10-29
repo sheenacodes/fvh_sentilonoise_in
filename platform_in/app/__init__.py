@@ -77,13 +77,14 @@ def create_app(script_info=None):
                 timestamp = data_stream["observations"][0]["timestamp"]
                 # ogging.info(timestamp)
                 dt_obj = datetime.strptime(timestamp, "%d/%m/%YT%H:%M:%SUTC")
-                timestamp_millisec = round(dt_obj.timestamp() * 1000)
-
+                phenomenon_timestamp_millisec = round(dt_obj.timestamp() * 1000)
+                dt_obj = datetime.utcnow()
+                result_timestamp_millisec = round(dt_obj.timestamp() * 1000)
                 topic = "finest-observations-sentilonoise"
                 observation = {
-                    "phenomenontime_begin": None,
+                    "phenomenontime_begin": phenomenon_timestamp_millisec,
                     "phenomenontime_end": None,
-                    "resulttime": timestamp_millisec,
+                    "resulttime": result_timestamp_millisec,
                     "result": data_stream["observations"][0]["value"],
                     "resultquality": None,
                     "validtime_begin": None,
