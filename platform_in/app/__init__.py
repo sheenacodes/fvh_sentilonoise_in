@@ -54,7 +54,7 @@ def create_app(script_info=None):
 
     @app.route("/")
     def hello_world():
-        return jsonify(hello="world")
+        return jsonify(health="ok")
 
     @app.route("/cesva/v1", methods=["PUT"])
     def put_sentilonoise_data():
@@ -107,7 +107,7 @@ def create_app(script_info=None):
             return success_response_object, success_code
 
         except Exception as e:
-            logging.error(e)
+            logging.error("Error at %s", "data to kafka", exc_info=e)
             elastic_apm.capture_exception()
             return failure_response_object, failure_code
 
