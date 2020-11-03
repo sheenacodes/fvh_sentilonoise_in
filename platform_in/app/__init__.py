@@ -16,25 +16,6 @@ failure_response_object = {"status": "failure"}
 failure_code = 400
 
 
-def get_ds_id(thing, sensor):
-    """
-    requests the datastream id corresponding to the thing and sensor links given
-    returns -1 if not found
-    """
-    payload = {"thing": thing, "sensor": sensor}
-    logging.debug(f"getting datastream id {payload}")
-    resp = requests.get("http://st_datastreams_api:4999/datastream", params=payload)
-    # resp = requests.get("http://host.docker.internal:1338/datastream", params=payload)
-    # print(resp.json())
-    logging.debug(f"response: {resp.json()} ")
-
-    ds = resp.json()["Datastreams"]
-    if len(ds) == 1:
-        return ds[0]["datastream_id"]
-    else:
-        return -1
-
-
 def create_app(script_info=None):
 
     # instantiate the app
@@ -46,6 +27,25 @@ def create_app(script_info=None):
 
     # set up extensions
     elastic_apm.init_app(app)
+
+    def get_ds_id(thing, sensor):
+        # """
+        # requests the datastream id corresponding to the thing and sensor links given
+        # returns -1 if not found
+        # """
+
+        payload = {"thing": thing, "sensor": sensor}
+        logging.debug(f"getting datastream id {payload}")
+        resp = requests.get(app.config["DATASTREAMS_ENDPOINT"], params=payload)
+        # resp = requests.get("http://host.docker.internal:1338/datastream", params=payload)
+        logging.debug(f"response: {resp.json()} ")
+
+        id = -1
+        ds = resp.json()["Datastreams"]
+        if len(ds) == 1:
+            id = ds[0]["datastream_id"]
+
+        return id
 
     # shell context for flask cli
     @app.shell_context_processor
@@ -98,7 +98,7 @@ def create_app(script_info=None):
 
                 headers = {"Content-type": "application/json"}
                 resp = requests.post(
-                    "http://st_observations_api:4888/observation",
+                    app.config["OBSERVATIONS_ENDPOINT"],
                     data=json.dumps(payload),
                     headers=headers,
                 )

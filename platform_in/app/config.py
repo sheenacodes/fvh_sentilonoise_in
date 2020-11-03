@@ -1,4 +1,7 @@
 import os
+import logging
+
+logging.basicConfig(level=logging.INFO)
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -8,21 +11,17 @@ def get_env_variable(name):
         return os.environ[name]
     except KeyError:
         message = "Expected environment variable '{}' not set.".format(name)
+        logging.error(message)
         raise Exception(message)
 
 class Config(object):
 
-    SECRET_KEY = os.environ.get("SECRET_KEY") or "super-secret-key"
+    SECRET_KEY = os.environ.get("SECRET_KEY")
     DEBUG = True
     CSRF_ENABLED = True
 
-
-    SASL_UNAME = get_env_variable("SASL_UNAME")
-    SASL_PASSWORD = get_env_variable("SASL_PASSWORD")
-    KAFKA_BROKERS = get_env_variable("KAFKA_BROKERS")
-    SECURITY_PROTOCOL = get_env_variable("SECURITY_PROTOCOL")
-    SASL_MECHANISM = get_env_variable("SASL_MECHANISM")
-    SCHEMA_REGISTRY_URL = get_env_variable("SCHEMA_REGISTRY_URL")
+    OBSERVATIONS_ENDPOINT = get_env_variable("OBSERVATIONS_ENDPOINT")
+    DATASTREAMS_ENDPOINT = get_env_variable("DATASTREAMS_ENDPOINT")
 
     ELASTIC_APM = {
         'SERVICE_NAME': get_env_variable("ELASTIC_SERVICE_NAME"),
@@ -35,18 +34,13 @@ class Config(object):
 
 class ProductionConfig(Config):
     DEBUG = False
-    SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL")
-    SECRET_KEY = os.environ.get("SECRET_KEY") or "prod-secret-key"
 
 class DevelopmentConfig(Config):
     DEVELOPMENT = True
     TESTING = False
     DEBUG = True
-    SECRET_KEY = os.environ.get("SECRET_KEY") or "dev-secret-key"
-    #ELASTIC_APM['DEBUG']=True
-    
+
 class TestingConfig(Config):
     TESTING = True
-    SECRET_KEY = os.environ.get("SECRET_KEY") or "test-secret-key"
 
 
