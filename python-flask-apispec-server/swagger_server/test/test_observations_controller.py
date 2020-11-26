@@ -5,23 +5,23 @@ from __future__ import absolute_import
 from flask import json
 from six import BytesIO
 
-from swagger_server.models.inventory_item import InventoryItem  # noqa: E501
+from swagger_server.models.sensors import Sensors  # noqa: E501
 from swagger_server.test import BaseTestCase
 
 
-class TestAdminsController(BaseTestCase):
-    """AdminsController integration test stubs"""
+class TestObservationsController(BaseTestCase):
+    """ObservationsController integration test stubs"""
 
     def test_add_inventory(self):
         """Test case for add_inventory
 
-        adds an inventory item
+        adds noise observations to UoP
         """
-        inventoryItem = InventoryItem()
+        Sensors = Sensors()
         response = self.client.open(
-            '/FinEst-Twins/test/1.0.0/inventory',
+            '/FinEst-Twins/sentilonoise/1.0.0/cesva/v1',
             method='POST',
-            data=json.dumps(inventoryItem),
+            data=json.dumps(Sensors),
             content_type='application/json')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))

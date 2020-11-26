@@ -1,69 +1,24 @@
 ---
 swagger: "2.0"
 info:
-  description: "This is a simple API"
+  description: "This API accepts noise input from sensors in the sentilo format"
   version: "1.0.0"
-  title: "Simple Inventory API"
+  title: "Cesva Noise Observation API"
   contact:
-    email: "you@your-company.com"
+    email: "sheena.puthanpurayil@forumvirium.fi"
   license:
     name: "Apache 2.0"
     url: "http://www.apache.org/licenses/LICENSE-2.0.html"
 host: "virtserver.swaggerhub.com"
-basePath: "/FinEst-Twins/test/1.0.0"
-tags:
-- name: "admins"
-  description: "Secured Admin-only calls"
-- name: "developers"
-  description: "Operations available to regular developers"
+basePath: "/FinEst-Twins/sentilonoise/1.0.0"
 schemes:
 - "https"
 paths:
-  /inventory:
-    get:
-      tags:
-      - "developers"
-      summary: "searches inventory"
-      description: "By passing in the appropriate options, you can search for\navailable\
-        \ inventory in the system\n"
-      operationId: "search_inventory"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "searchString"
-        in: "query"
-        description: "pass an optional search string for looking up inventory"
-        required: false
-        type: "string"
-      - name: "skip"
-        in: "query"
-        description: "number of records to skip for pagination"
-        required: false
-        type: "integer"
-        minimum: 0
-        format: "int32"
-      - name: "limit"
-        in: "query"
-        description: "maximum number of records to return"
-        required: false
-        type: "integer"
-        maximum: 50
-        minimum: 0
-        format: "int32"
-      responses:
-        "200":
-          description: "search results matching criteria"
-          schema:
-            type: "array"
-            items:
-              $ref: "#/definitions/InventoryItem"
-        "400":
-          description: "bad input parameter"
-      x-swagger-router-controller: "swagger_server.controllers.developers_controller"
+  /cesva/v1:
     post:
       tags:
-      - "admins"
-      summary: "adds an inventory item"
+      - "Observations"
+      summary: "adds noise observations to UoP"
       description: "Adds an item to the system"
       operationId: "add_inventory"
       consumes:
@@ -72,11 +27,11 @@ paths:
       - "application/json"
       parameters:
       - in: "body"
-        name: "inventoryItem"
-        description: "Inventory item to add"
+        name: "Sensors"
+        description: "Observations from Sensors"
         required: false
         schema:
-          $ref: "#/definitions/InventoryItem"
+          $ref: "#/definitions/Sensors"
       responses:
         "201":
           description: "item created"
@@ -84,52 +39,61 @@ paths:
           description: "invalid input, object invalid"
         "409":
           description: "an existing item already exists"
-      x-swagger-router-controller: "swagger_server.controllers.admins_controller"
+      x-swagger-router-controller: "swagger_server.controllers.observations_controller"
 definitions:
-  InventoryItem:
+  Sensors:
     type: "object"
     required:
-    - "id"
-    - "manufacturer"
-    - "name"
-    - "releaseDate"
+    - "sensors"
     properties:
-      id:
+      sensors:
+        type: "array"
+        items:
+          $ref: "#/definitions/Sensor"
+    example:
+      sensors:
+      - observations:
+        - value: " \"10.0\" or \"[10.0,10.1]\" "
+          timestamp: "12/03/2020T12:26:58UTC"
+        - value: " \"10.0\" or \"[10.0,10.1]\" "
+          timestamp: "12/03/2020T12:26:58UTC"
+        sensor: "TA120-T246174-N"
+      - observations:
+        - value: " \"10.0\" or \"[10.0,10.1]\" "
+          timestamp: "12/03/2020T12:26:58UTC"
+        - value: " \"10.0\" or \"[10.0,10.1]\" "
+          timestamp: "12/03/2020T12:26:58UTC"
+        sensor: "TA120-T246174-N"
+  Sensor:
+    required:
+    - "sensor"
+    properties:
+      sensor:
         type: "string"
-        format: "uuid"
-        example: "d290f1ee-6c54-4b01-90e6-d701748f0851"
-      name:
+        example: "TA120-T246174-N"
+      observations:
+        type: "array"
+        items:
+          $ref: "#/definitions/Observation"
+    example:
+      observations:
+      - value: " \"10.0\" or \"[10.0,10.1]\" "
+        timestamp: "12/03/2020T12:26:58UTC"
+      - value: " \"10.0\" or \"[10.0,10.1]\" "
+        timestamp: "12/03/2020T12:26:58UTC"
+      sensor: "TA120-T246174-N"
+  Observation:
+    required:
+    - "timestamp"
+    - "value"
+    properties:
+      value:
         type: "string"
-        example: "Widget Adapter"
-      releaseDate:
+        example: " \"10.0\" or \"[10.0,10.1]\" "
+      timestamp:
         type: "string"
         format: "date-time"
-        example: "2016-08-29T09:12:33.001+0000"
-      manufacturer:
-        $ref: "#/definitions/Manufacturer"
+        example: "12/03/2020T12:26:58UTC"
     example:
-      releaseDate: "2016-08-29T09:12:33.001+0000"
-      name: "Widget Adapter"
-      id: "d290f1ee-6c54-4b01-90e6-d701748f0851"
-      manufacturer:
-        phone: "408-867-5309"
-        name: "ACME Corporation"
-        homePage: "https://www.acme-corp.com"
-  Manufacturer:
-    required:
-    - "name"
-    properties:
-      name:
-        type: "string"
-        example: "ACME Corporation"
-      homePage:
-        type: "string"
-        format: "url"
-        example: "https://www.acme-corp.com"
-      phone:
-        type: "string"
-        example: "408-867-5309"
-    example:
-      phone: "408-867-5309"
-      name: "ACME Corporation"
-      homePage: "https://www.acme-corp.com"
+      value: " \"10.0\" or \"[10.0,10.1]\" "
+      timestamp: "12/03/2020T12:26:58UTC"

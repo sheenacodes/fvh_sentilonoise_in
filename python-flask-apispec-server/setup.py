@@ -18,10 +18,10 @@ REQUIRES = ["connexion"]
 setup(
     name=NAME,
     version=VERSION,
-    description="Simple Inventory API",
-    author_email="you@your-company.com",
+    description="Cesva Noise Observation API",
+    author_email="sheena.puthanpurayil@forumvirium.fi",
     url="",
-    keywords=["Swagger", "Simple Inventory API"],
+    keywords=["Swagger", "Cesva Noise Observation API"],
     install_requires=REQUIRES,
     packages=find_packages(),
     package_data={'': ['swagger/swagger.yaml']},
@@ -29,7 +29,7 @@ setup(
     entry_points={
         'console_scripts': ['swagger_server=swagger_server.__main__:main']},
     long_description="""\
-    This is a simple API
+    This API accepts noise input from sensors in the sentilo format
     """
 )
 
