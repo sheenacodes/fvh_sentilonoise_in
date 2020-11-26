@@ -5,10 +5,10 @@ from swagger_server.models.sensors import Sensors  # noqa: E501
 from swagger_server import util
 
 
-def add_inventory(Sensors=None):  # noqa: E501
+def cesva_v1_post(Sensors=None):  # noqa: E501
     """adds noise observations to UoP
 
-    Adds an item to the system # noqa: E501
+     # noqa: E501
 
     :param Sensors: Observations from Sensors
     :type Sensors: dict | bytes

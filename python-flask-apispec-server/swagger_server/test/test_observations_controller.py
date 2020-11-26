@@ -12,8 +12,8 @@ from swagger_server.test import BaseTestCase
 class TestObservationsController(BaseTestCase):
     """ObservationsController integration test stubs"""
 
-    def test_add_inventory(self):
-        """Test case for add_inventory
+    def test_cesva_v1_post(self):
+        """Test case for cesva_v1_post
 
         adds noise observations to UoP
         """

@@ -11,6 +11,8 @@ info:
     url: "http://www.apache.org/licenses/LICENSE-2.0.html"
 host: "virtserver.swaggerhub.com"
 basePath: "/FinEst-Twins/sentilonoise/1.0.0"
+tags:
+- name: "Observations"
 schemes:
 - "https"
 paths:
@@ -19,8 +21,7 @@ paths:
       tags:
       - "Observations"
       summary: "adds noise observations to UoP"
-      description: "Adds an item to the system"
-      operationId: "add_inventory"
+      operationId: "cesva_v1_post"
       consumes:
       - "application/json"
       produces:
@@ -53,15 +54,15 @@ definitions:
     example:
       sensors:
       - observations:
-        - value: " \"10.0\" or \"[10.0,10.1]\" "
+        - value: "10.0"
           timestamp: "12/03/2020T12:26:58UTC"
-        - value: " \"10.0\" or \"[10.0,10.1]\" "
+        - value: "10.0"
           timestamp: "12/03/2020T12:26:58UTC"
         sensor: "TA120-T246174-N"
       - observations:
-        - value: " \"10.0\" or \"[10.0,10.1]\" "
+        - value: "10.0"
           timestamp: "12/03/2020T12:26:58UTC"
-        - value: " \"10.0\" or \"[10.0,10.1]\" "
+        - value: "10.0"
           timestamp: "12/03/2020T12:26:58UTC"
         sensor: "TA120-T246174-N"
   Sensor:
@@ -77,9 +78,9 @@ definitions:
           $ref: "#/definitions/Observation"
     example:
       observations:
-      - value: " \"10.0\" or \"[10.0,10.1]\" "
+      - value: "10.0"
         timestamp: "12/03/2020T12:26:58UTC"
-      - value: " \"10.0\" or \"[10.0,10.1]\" "
+      - value: "10.0"
         timestamp: "12/03/2020T12:26:58UTC"
       sensor: "TA120-T246174-N"
   Observation:
@@ -89,11 +90,11 @@ definitions:
     properties:
       value:
         type: "string"
-        example: " \"10.0\" or \"[10.0,10.1]\" "
+        example: "10.0"
       timestamp:
         type: "string"
         format: "date-time"
         example: "12/03/2020T12:26:58UTC"
     example:
-      value: " \"10.0\" or \"[10.0,10.1]\" "
+      value: "10.0"
       timestamp: "12/03/2020T12:26:58UTC"
