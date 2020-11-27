@@ -20,6 +20,8 @@ COPY requirements.txt .
 RUN python3 -m pip install -r requirements.txt
 #apt-get update  && \
 
+COPY . /project/
+
 # add and run as non-root user
 RUN addgroup --system appuser && adduser --system --no-create-home --group appuser
 RUN chown -R appuser:appuser /project

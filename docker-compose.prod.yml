@@ -7,8 +7,6 @@ services:
         context: ./platform_in/
         dockerfile: Dockerfile.prod
     command: gunicorn --bind 0.0.0.0:5000 manage:app
-    volumes:
-      - ./platform_in/:/project/
     expose:
       - 5000
     env_file:
