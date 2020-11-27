@@ -1,12 +1,12 @@
-version: '3'
+version: "3"
 
 services:
 
   fvh_sentilonoise_in:
     build:
-        context: ./platform_in/
-        dockerfile: Dockerfile.prod
-    command: gunicorn --bind 0.0.0.0:5000 manage:app
+      context: ./platform_in/
+      dockerfile: Dockerfile.prod
+    #command: gunicorn --bind 0.0.0.0:5000 manage:app
     expose:
       - 5000
     env_file:
@@ -15,7 +15,6 @@ services:
       - FLASK_APP=app/__init__.py
       - FLASK_ENV=production
       - APP_SETTINGS=app.config.ProductionConfig
-
 
   nginx:
     build: ./nginx
