@@ -11,7 +11,7 @@ logging.basicConfig(level=logging.INFO)
 elastic_apm = ElasticAPM()
 
 success_response_object = {"status": "success"}
-success_code = 202
+success_code = 200
 failure_response_object = {"status": "failure"}
 failure_code = 400
 
