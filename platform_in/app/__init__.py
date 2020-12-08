@@ -60,7 +60,7 @@ def create_app(script_info=None):
     def put_sentilonoise_data():
         try:
             data = request.get_json()
-            #logging.info(data)
+            logging.info(data)
             data_streams = data["sensors"]
 
             for data_stream in data_streams:
