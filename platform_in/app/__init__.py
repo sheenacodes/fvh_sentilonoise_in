@@ -80,8 +80,8 @@ def create_app(script_info=None):
                 phenomenon_timestamp_millisec = round(dt_obj.timestamp() * 1000)
                 dt_obj = datetime.utcnow()
                 result_timestamp_millisec = round(dt_obj.timestamp() * 1000)
-                #topic = "finest.sensorthings.observations.sentilo.cesva"
-                topic = "test.sheena"
+                topic = "finest.sensorthings.observations.sentilo.cesva"
+                #topic = "test.sheena"
                 observation = {
                     "phenomenontime_begin": phenomenon_timestamp_millisec,
                     "phenomenontime_end": None,
