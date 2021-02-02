@@ -35,7 +35,7 @@ def create_app(script_info=None):
         # """
 
         payload = {"thing": thing, "sensor": sensor}
-        logging.info(f"getting datastream id {payload}")
+        logging.debug(f"getting datastream id {payload}")
         resp = requests.get(app.config["DATASTREAMS_ENDPOINT"], params=payload)
         #resp = requests.get("http://host.docker.internal:1338/datastream", params=payload)
         logging.debug(f"response: {resp.json()} ")
