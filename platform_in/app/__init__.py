@@ -36,8 +36,8 @@ def create_app(script_info=None):
 
         payload = {"thing": thing, "sensor": sensor}
         logging.info(f"getting datastream id {payload}")
-        #resp = requests.get(app.config["DATASTREAMS_ENDPOINT"], params=payload)
-        resp = requests.get("http://host.docker.internal:1338/datastream", params=payload)
+        resp = requests.get(app.config["DATASTREAMS_ENDPOINT"], params=payload)
+        #resp = requests.get("http://host.docker.internal:1338/datastream", params=payload)
         logging.debug(f"response: {resp.json()} ")
 
         id = -1
@@ -99,12 +99,12 @@ def create_app(script_info=None):
                 payload = {"topic": topic, "observation": observation}
 
                 headers = {"Content-type": "application/json"}
-                # resp = requests.post(
-                #     app.config["OBSERVATIONS_ENDPOINT"],
-                #     data=json.dumps(payload),
-                #     headers=headers,
-                # )
-                resp = requests.post("http://host.docker.internal:1337/observation", data=json.dumps(payload), headers=headers)
+                resp = requests.post(
+                    app.config["OBSERVATIONS_ENDPOINT"],
+                    data=json.dumps(payload),
+                    headers=headers,
+                )
+                #resp = requests.post("http://host.docker.internal:1337/observation", data=json.dumps(payload), headers=headers)
 
             return success_response_object, success_code
 
