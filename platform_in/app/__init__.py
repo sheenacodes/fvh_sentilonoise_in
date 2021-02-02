@@ -41,7 +41,7 @@ def create_app(script_info=None):
         logging.debug(f"response: {resp.json()} ")
 
         id = -1
-        print(resp.json())
+        #print(resp.json())
         ds = resp.json()["Datastreams"]
         if len(ds) == 1:
             id = ds[0]["datastream_id"]
