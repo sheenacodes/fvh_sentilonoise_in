@@ -93,7 +93,7 @@ def create_app(script_info=None):
                     "validtime_end": None,
                     "parameters": None,
                     "datastream_id": ds_id,
-                    "featureofintrest_link": None,
+                    "featureofinterest_id": None,
                 }
 
                 payload = {"topic": topic, "observation": observation}
