@@ -7,8 +7,14 @@ import json
 from datetime import datetime
 import requests
 
-logging.basicConfig(level=logging.INFO)
-#elastic_apm = ElasticAPM()
+import sentry_sdk
+
+from sentry_sdk.integrations.flask import FlaskIntegration
+
+if os.getenv("SENTRY_DSN"):
+    sentry_sdk.init(dsn=os.getenv("SENTRY_DSN"), integrations=[FlaskIntegration()])
+
+elastic_apm = ElasticAPM()
 
 success_response_object = {"status": "success"}
 success_code = 200
@@ -25,8 +31,11 @@ def create_app(script_info=None):
     app_settings = os.getenv("APP_SETTINGS")
     app.config.from_object(app_settings)
 
+    logging.basicConfig(level=app.config["LOG_LEVEL"])
+    logging.getLogger().setLevel(app.config["LOG_LEVEL"])
+
     # set up extensions
-    #elastic_apm.init_app(app)
+    elastic_apm.init_app(app)
 
     def get_ds_id(thing, sensor):
         # """
@@ -37,11 +46,11 @@ def create_app(script_info=None):
         payload = {"thing": thing, "sensor": sensor}
         logging.debug(f"getting datastream id {payload}")
         resp = requests.get(app.config["DATASTREAMS_ENDPOINT"], params=payload)
-        #resp = requests.get("http://host.docker.internal:1338/datastream", params=payload)
+        # resp = requests.get("http://host.docker.internal:1338/datastream", params=payload)
         logging.debug(f"response: {resp.json()} ")
 
         id = -1
-        #print(resp.json())
+        # print(resp.json())
         ds = resp.json()["Datastreams"]
         if len(ds) == 1:
             id = ds[0]["datastream_id"]
@@ -57,6 +66,10 @@ def create_app(script_info=None):
     def hello_world():
         return jsonify(health="ok")
 
+    @app.route("/debug-sentry")
+    def trigger_error():
+        division_by_zero = 1 / 0
+
     @app.route("/cesva/v1", methods=["PUT"])
     def put_sentilonoise_data():
         try:
@@ -66,6 +79,8 @@ def create_app(script_info=None):
 
             for data_stream in data_streams:
                 name = data_stream["sensor"]
+
+                device = name[0 : len(name) - 2]
                 thing = f"Noise-{name[0:len(name)-2]}"
                 sensor = f"{name[-1].lower()}_val"
                 logging.debug(thing)
@@ -82,7 +97,7 @@ def create_app(script_info=None):
                 dt_obj = datetime.utcnow()
                 result_timestamp_millisec = round(dt_obj.timestamp() * 1000)
                 topic = "finest.sensorthings.observations.sentilo.cesva"
-                #topic = "test.sheena"
+                # topic = "test.sheena"
                 observation = {
                     "phenomenontime_begin": phenomenon_timestamp_millisec,
                     "phenomenontime_end": None,
@@ -104,13 +119,13 @@ def create_app(script_info=None):
                     data=json.dumps(payload),
                     headers=headers,
                 )
-                #resp = requests.post("http://host.docker.internal:1337/observation", data=json.dumps(payload), headers=headers)
+                # resp = requests.post("http://host.docker.internal:1337/observation", data=json.dumps(payload), headers=headers)
 
             return success_response_object, success_code
 
         except Exception as e:
             logging.error("Error at %s", "data to kafka", exc_info=e)
-            #elastic_apm.capture_exception()
+            # elastic_apm.capture_exception()
             return failure_response_object, failure_code
 
     return app
