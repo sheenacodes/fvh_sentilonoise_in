@@ -73,6 +73,8 @@ def create_app(script_info=None):
     @app.route("/cesva/v1", methods=["PUT"])
     def put_sentilonoise_data():
         try:
+            data = request.get_data()
+            logging.info(f"post data goes like : {data[0:200]}")
             data = request.get_json()
             logging.debug(data)
             data_streams = data["sensors"]
