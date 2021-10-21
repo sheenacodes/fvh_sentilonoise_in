@@ -3,3 +3,6 @@ env
 *.env
 .vscode
 *.pem
+ingress.yaml
+service.yaml
+deployment.yaml

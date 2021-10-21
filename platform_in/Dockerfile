@@ -8,11 +8,16 @@ WORKDIR /project
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
+## install nc
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends netcat-openbsd
+
 # add and install requirements
 COPY requirements.txt .
 
 RUN python3 -m pip install -r requirements.txt
+#apt-get update  && \
 
-# add app
 COPY . /project/
+
 

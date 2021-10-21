@@ -1,8 +1,6 @@
 import os
 import logging
 
-logging.basicConfig(level=logging.INFO)
-
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 
