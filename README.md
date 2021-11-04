@@ -5,6 +5,8 @@ To bring up service:
 Note: the environment variables file config.env must be at root folder and
 the ssl root cert (pem file) should be in folder /platform_in
 
+Note: Dockerfile.prod is more up-to-date
+
 dev config (flask dev server):
 
     docker-compose up
